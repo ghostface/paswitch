@@ -1,6 +1,6 @@
 {
   "name": "paswitch",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Switches PulseAudio devices by muting the others",
   "main": "index.js",
   "bin": "./bin/cli.js",
@@ -15,7 +15,7 @@
     "pulseaudio",
     "pulse",
     "audio",
-    "pacmd",
+    "pactl",
     "sink"
   ],
   "author": "Tijmen Bok",
