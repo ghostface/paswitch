@@ -1,9 +1,9 @@
 const spawn = require("child_process").spawn;
 const Core  = require("./core");
 
-function Pacmd() {};
+function Pactl() {};
 
-Pacmd.getSinkData = function() {
+Pactl.getSinkData = function() {
   return new Promise((resolve, reject) => {
     let proc = spawn("pactl", ["list","sinks"]);
     let resultStr = "";
@@ -23,7 +23,7 @@ Pacmd.getSinkData = function() {
             deviceIndex = parseInt(RegExp.$1);
             data[deviceIndex] = {};
           }
-          else if(line.match(/\s*Name:\s*<(.*)>\s*/) && deviceIndex >= 0) {
+          else if(line.match(/\s*node\.name\s*=\s*"(.*)"\s*/) && deviceIndex >= 0) {
             data[deviceIndex].sink = RegExp.$1;
           }
           else if(line.match(/\s*node\.name\s*=\s*"(.*)"\s*/) && deviceIndex >= 0) {
@@ -39,7 +39,7 @@ Pacmd.getSinkData = function() {
   });
 };
 
-Pacmd.muteSink = function(sinkName, mute) {
+Pactl.muteSink = function(sinkName, mute) {
   return new Promise(resolve => {
     let success = true;
     let proc = spawn("pactl", ["set-sink-mute", sinkName, mute === true ? "1" : "0"]);
@@ -57,7 +57,7 @@ Pacmd.muteSink = function(sinkName, mute) {
   });
 };
 
-Pacmd.setDefaultSink = function(sinkName) {
+Pactl.setDefaultSink = function(sinkName) {
   return new Promise(resolve => {
     let success = true;
     let proc = spawn("pactl", ["set-default-sink", sinkName]);
@@ -75,7 +75,7 @@ Pacmd.setDefaultSink = function(sinkName) {
   });
 };
 
-Pacmd.getSinkInputs = function() {
+Pactl.getSinkInputs = function() {
   return new Promise(resolve => {
     let proc = spawn("pactl", ["list","sink-inputs"]);
     let str = "";
@@ -104,7 +104,7 @@ Pacmd.getSinkInputs = function() {
   });
 };
 
-Pacmd.moveSinkInputs = function(sink, sinkInputs) {
+Pactl.moveSinkInputs = function(sink, sinkInputs) {
   return new Promise(resolve => {
     if(sinkInputs == null) {
       this.getSinkInputs()
@@ -116,7 +116,8 @@ Pacmd.moveSinkInputs = function(sink, sinkInputs) {
 
     else {
       let sinkInputCount = 0;
-      sinkInputs = sinkInputs.filter(obj => { return obj.type === "playback"; } );
+      //Don't filter -> switch all inputs
+      //sinkInputs = sinkInputs.filter(obj => { return obj.type === "playback"; } );
       for(let a = 0;a < sinkInputs.length;a++) {
         let sinkInput = sinkInputs[a];
         let proc = spawn("pactl", ["move-sink-input", sinkInput.index.toString(), sink]);
@@ -129,4 +130,4 @@ Pacmd.moveSinkInputs = function(sink, sinkInputs) {
   });
 };
 
-module.exports = Pacmd;
+module.exports = Pactl;

@@ -3,7 +3,7 @@ const CliOptions       = require("./cli-options");
 const spawn            = require("child_process").spawn;
 const notifier         = require("node-notifier");
 const PulseAudioWizard = require("./pulseaudiowizard");
-const Pacmd            = require("./pacmd")
+const Pactl            = require("./pactl")
 
 const WARN_NOSINKDATAFOUND = 1;
 const WARN_NOSINKMUTE      = 2;
@@ -39,7 +39,8 @@ Core.run = function() {
     let sink = DataManager.config.sinks.filter(obj => { return obj.name === CliOptions.options.friendlyName; })[0];
     if(sink == null) console.error("Could not find a sink with a friendly name of '"+CliOptions.options.friendlyName+"'");
     else this.switchToSink(CliOptions.options.friendlyName);
-    doSave = false;
+    //Need to save otherwise currentSwitch in the config wont be updated and toggle wont work
+    doSave = true;
   }
   // Toggle sink output
   else if(CliOptions.command === "toggle") {
@@ -55,7 +56,8 @@ Core.run = function() {
     let targetIndex = (currentIndex + 1) % sinkArr.length;
     let targetSinkObj = sinkArr[targetIndex];
     this.switchToSink(targetSinkObj.name);
-    doSave = false;
+    //Need to save otherwise currentSwitch in the config wont be updated and toggle wont work
+    doSave = true;
   }
   // Set/add sink
   else if(CliOptions.command === "set-sink") {
@@ -88,7 +90,7 @@ Core.enableSink = function(sinkObj, switchType) {
   let sentMessage = false;
   // Set default sink
   if(switchType.default) {
-    Pacmd.setDefaultSink(sinkObj.sinkName)
+    Pactl.setDefaultSink(sinkObj.sinkName)
     .then(success => {
       if(!success) this.displayWarning(WARN_NOSINKDEFAULT, sinkObj);
       else if(!sentMessage) {
@@ -99,7 +101,7 @@ Core.enableSink = function(sinkObj, switchType) {
   }
   // Unmute sink
   if(switchType.mute) {
-    Pacmd.muteSink(sinkObj.sinkName, false)
+    Pactl.muteSink(sinkObj.sinkName, false)
     .then(success => {
       if(!success) this.displayWarning(WARN_NOSINKUNMUTE, sinkObj);
       else if(!sentMessage) {
@@ -110,7 +112,7 @@ Core.enableSink = function(sinkObj, switchType) {
   }
   // Relocate sink inputs
   if(switchType.relocate) {
-    Pacmd.moveSinkInputs(sinkObj.sinkName)
+    Pactl.moveSinkInputs(sinkObj.sinkName)
     .then(() => {});
   }
 };
@@ -119,7 +121,7 @@ Core.disableSink = function(sinkObj, switchType) {
   let sentMessage = false;
   // Mute sink
   if(switchType.mute) {
-    Pacmd.muteSink(sinkObj.sinkName, true)
+    Pactl.muteSink(sinkObj.sinkName, true)
     .then(success => {
       if(!success) this.displayWarning(WARN_NOSINKUNMUTE, sinkObj);
     });

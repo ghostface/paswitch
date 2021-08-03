@@ -1,5 +1,5 @@
 const inquirer    = require("inquirer");
-const pacmd       = require("./pacmd");
+const Pactl       = require("./pactl");
 const DataManager = require("./datamanager")
 
 function PulseAudioWizard() {};
@@ -34,7 +34,7 @@ PulseAudioWizard.start = function(type) {
 
 PulseAudioWizard.startAddSink = function() {
   return new Promise((resolve, reject) => {
-    pacmd.getSinkData()
+    Pactl.getSinkData()
     .catch(code => { reject(code); })
     .then(data => {
       let sinkArr = [];
