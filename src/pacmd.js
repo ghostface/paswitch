@@ -5,7 +5,7 @@ function Pacmd() {};
 
 Pacmd.getSinkData = function() {
   return new Promise((resolve, reject) => {
-    let proc = spawn("pacmd", ["list-sinks"]);
+    let proc = spawn("pactl", ["list","sinks"]);
     let resultStr = "";
     proc.stdout.on("data", (data) => {
       resultStr += data.toString();
@@ -42,7 +42,7 @@ Pacmd.getSinkData = function() {
 Pacmd.muteSink = function(sinkName, mute) {
   return new Promise(resolve => {
     let success = true;
-    let proc = spawn("pacmd", ["set-sink-mute", sinkName, mute === true ? "1" : "0"]);
+    let proc = spawn("pactl", ["set-sink-mute", sinkName, mute === true ? "1" : "0"]);
     // Event: Data (something went wrong)
     proc.stdout.on("data", data => {
       let str = data.toString();
@@ -60,7 +60,7 @@ Pacmd.muteSink = function(sinkName, mute) {
 Pacmd.setDefaultSink = function(sinkName) {
   return new Promise(resolve => {
     let success = true;
-    let proc = spawn("pacmd", ["set-default-sink", sinkName]);
+    let proc = spawn("pactl", ["set-default-sink", sinkName]);
     // Event: Data (something went wrong)
     proc.stdout.on("data", (data) => {
       let str = data.toString();
@@ -77,7 +77,7 @@ Pacmd.setDefaultSink = function(sinkName) {
 
 Pacmd.getSinkInputs = function() {
   return new Promise(resolve => {
-    let proc = spawn("pacmd", ["list-sink-inputs"]);
+    let proc = spawn("pactl", ["list","sink-inputs"]);
     let str = "";
     proc.stdout.on("data", data => {
       str += data.toString();
@@ -119,7 +119,7 @@ Pacmd.moveSinkInputs = function(sink, sinkInputs) {
       sinkInputs = sinkInputs.filter(obj => { return obj.type === "playback"; } );
       for(let a = 0;a < sinkInputs.length;a++) {
         let sinkInput = sinkInputs[a];
-        let proc = spawn("pacmd", ["move-sink-input", sinkInput.index.toString(), sink]);
+        let proc = spawn("pactl", ["move-sink-input", sinkInput.index.toString(), sink]);
         proc.on("close", (code, signal) => {
           sinkInputCount++;
           if(sinkInputCount === sinkInputs.length) resolve();
