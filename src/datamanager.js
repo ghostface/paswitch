@@ -3,6 +3,7 @@ const os = require("os");
 const mkdirp = require("mkdirp");
 const lodash = require("lodash");
 const path = require("path");
+const Pactl = require("./pactl");
 
 function DataManager() {
 };
@@ -27,9 +28,20 @@ DataManager.start = function() {
     })
     .then(data => {
     // Read config file
-      this.readConfig(data);
-      // Done
-      resolve();
+      return this.readConfig(data);
+    })
+    .then(() => {
+        return Pactl.getCurrentSink();
+    })
+    .then(currentSink => {
+        for(let a = 0;a < this.config.sinks.length;a++) {
+            let sinkObj = this.config.sinks[a];
+            if(sinkObj.sinkName === currentSink) {
+              this.config.currentSink=this.config.sinks[a].name;
+              break;
+            }
+          }
+        resolve();
     })
     .catch(err => {
       // Error: reject

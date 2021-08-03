@@ -6,7 +6,10 @@ CLI application to switch between PulseAudio sinks, as defined by the user with 
 
 - Use pactl instead of pacmd
 - Works with pipewire
-- Relocate all sink inputs by default
+- Read the current default sink from pa/pipewire instead of the config file
+- Relocate all sink inputs when switching and rename parmeter to --norelocate to disable
+- Set target sink as default when switching and rename parameter to --keepdefault to not do this
+- Added volume icon to notification display (audio-volume-high)
 
 # Requirements
 
@@ -69,7 +72,7 @@ This will start a wizard of the selected type, to easily manage sinks.
 ## Options
 
 ```
--d, --default      -- Switches to the target sink by making it the default sink (defaults to this is no -d and -m flags are specified)
+-k, --keepdefault  -- Do not set the default sink to the target sink by making it the default sink
 -m, --mute         -- Switches to the target sink by unmuting it and muting all other memorized sinks
 -n, --norelocate   -- Do not relocate existing application sink inputs to the new sink
 ```
@@ -81,4 +84,4 @@ add-sink           -- Shows an interactive list of connected sinks to select and
 remove-sink        -- Shows an interactive list of remembered sinks to forget
 ```
 
-Note that you can combine `--default` and `--mute` options.
+Note that you can combine `--nodefault`, `--norelocate` and `--mute` options.

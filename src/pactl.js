@@ -3,6 +3,19 @@ const Core  = require("./core");
 
 function Pactl() {};
 
+Pactl.getCurrentSink = function() {
+  return new Promise((resolve, reject) => {
+    let proc = spawn("pactl", ["get-default-sink"]);
+    let resultStr = "";
+    proc.stdout.on("data", (data) => {
+      resultStr += data.toString();
+    });
+    proc.on("close", (code, signal) => {
+        resolve(resultStr.trim());
+    });
+  });
+};
+
 Pactl.getSinkData = function() {
   return new Promise((resolve, reject) => {
     let proc = spawn("pactl", ["list","sinks"]);

@@ -39,8 +39,7 @@ Core.run = function() {
     let sink = DataManager.config.sinks.filter(obj => { return obj.name === CliOptions.options.friendlyName; })[0];
     if(sink == null) console.error("Could not find a sink with a friendly name of '"+CliOptions.options.friendlyName+"'");
     else this.switchToSink(CliOptions.options.friendlyName);
-    //Need to save otherwise currentSwitch in the config wont be updated and toggle wont work
-    doSave = true;
+    doSave = false;
   }
   // Toggle sink output
   else if(CliOptions.command === "toggle") {
@@ -56,8 +55,7 @@ Core.run = function() {
     let targetIndex = (currentIndex + 1) % sinkArr.length;
     let targetSinkObj = sinkArr[targetIndex];
     this.switchToSink(targetSinkObj.name);
-    //Need to save otherwise currentSwitch in the config wont be updated and toggle wont work
-    doSave = true;
+    doSave = false;
   }
   // Set/add sink
   else if(CliOptions.command === "set-sink") {
@@ -89,7 +87,7 @@ Core.switchToSink = function(name) {
 Core.enableSink = function(sinkObj, switchType) {
   let sentMessage = false;
   // Set default sink
-  if(switchType.default) {
+  if(!switchType.keepdefault) {
     Pactl.setDefaultSink(sinkObj.sinkName)
     .then(success => {
       if(!success) this.displayWarning(WARN_NOSINKDEFAULT, sinkObj);
@@ -130,7 +128,7 @@ Core.disableSink = function(sinkObj, switchType) {
 
 Core.getSwitchType = function() {
   let result = {
-    default: CliOptions.program.default,
+    keepdefault: CliOptions.program.keepdefault,
     mute: CliOptions.program.mute,
     norelocate: CliOptions.program.norelocate
   };
@@ -176,6 +174,7 @@ Core.notify = function(str) {
   if(!DataManager.config.notifyEnabled) return;
   notifier.notify({
     title: "PASwitch",
+    icon: "audio-volume-high",
     message: str
   });
 };
