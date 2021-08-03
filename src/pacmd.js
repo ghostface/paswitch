@@ -19,14 +19,14 @@ Pacmd.getSinkData = function() {
         let data = {};
         for(let a = 0;a < lines.length;a++) {
           let line = lines[a];
-          if(line.match(/^\s*(?:\*\s*)?index:\s*([0-9]+)/)) {
+          if(line.match(/^\s*(?:\*\s*)?Sink\s*\#([0-9]+)/)) {
             deviceIndex = parseInt(RegExp.$1);
             data[deviceIndex] = {};
           }
-          else if(line.match(/\s*name:\s*<(.*)>\s*/) && deviceIndex >= 0) {
+          else if(line.match(/\s*Name:\s*<(.*)>\s*/) && deviceIndex >= 0) {
             data[deviceIndex].sink = RegExp.$1;
           }
-          else if(line.match(/\s*media\.name\s*=\s*"(.*)"\s*/) && deviceIndex >= 0) {
+          else if(line.match(/\s*node\.name\s*=\s*"(.*)"\s*/) && deviceIndex >= 0) {
             data[deviceIndex].name = RegExp.$1;
           }
           else if(line.match(/\s*device\.description\s*=\s*"(.*)"\s*/) && deviceIndex >= 0) {
@@ -88,7 +88,7 @@ Pacmd.getSinkInputs = function() {
       let curObj = null;
       for(let a = 0;a < lines.length;a++) {
         let line = lines[a];
-        if(line.match(/^\s*index:\s+([0-9]+)\s*$/)) {
+        if(line.match(/^\s*Sink\sInput\s+\#([0-9]+)\s*$/)) {
           curObj = { index: parseInt(RegExp.$1), applicationName: "", type: "" };
           result.push(curObj);
         }
