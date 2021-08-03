@@ -111,7 +111,7 @@ Core.enableSink = function(sinkObj, switchType) {
     });
   }
   // Relocate sink inputs
-  if(switchType.relocate) {
+  if(!switchType.norelocate) {
     Pactl.moveSinkInputs(sinkObj.sinkName)
     .then(() => {});
   }
@@ -132,7 +132,7 @@ Core.getSwitchType = function() {
   let result = {
     default: CliOptions.program.default,
     mute: CliOptions.program.mute,
-    relocate: CliOptions.program.relocate
+    norelocate: CliOptions.program.norelocate
   };
   return result;
 };

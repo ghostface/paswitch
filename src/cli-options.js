@@ -12,7 +12,7 @@ CliOptions.start = function() {
   program
   .option("-d, --default", "Sets the target sink as the default sink")
   .option("-m, --mute", "Sets all memorized sinks except the target as muted")
-  .option("-r, --relocate", "Moves all sink inputs to the target sink")
+  .option("-n, --norelocate", "Do not move all sink inputs to the target sink")
   .version(DataManager.package.version);
 
   // Command: Switch to sink
