@@ -2,9 +2,15 @@
 
 CLI application to switch between PulseAudio sinks, as defined by the user with a friendly name.
 
+# Changes in this fork
+
+- Use pactl instead of pacmd
+- Works with pipewire
+- Relocate all sink inputs by default
+
 # Requirements
 
-For this tool to function you must have the `pacmd` program installed on your (Linux) machine.
+For this tool to function you must have the `pactl` program installed on your (Linux) machine.
 
 Optionally, you need `libnotify` (`libnotify` on Pacman for example) if you want notifications.
 
@@ -24,7 +30,7 @@ Before you can begin, you need to add some sink data.
 
 Syntax: `paswitch set-sink <friendly-name> <sink-name>`
 
-Where `<friendly-name>` is the shorthand name you want to give to the sink, and `<sink-name>` is the name of the sink as seen in the command `pacmd list-sinks | grep "name:"` between the `<` and `>` characters.
+Where `<friendly-name>` is the shorthand name you want to give to the sink, and `<sink-name>` is the name of the sink as seen in the command `pactl list sinks | grep "Name:"`
 
 ## Remove sink
 
@@ -65,7 +71,7 @@ This will start a wizard of the selected type, to easily manage sinks.
 ```
 -d, --default      -- Switches to the target sink by making it the default sink (defaults to this is no -d and -m flags are specified)
 -m, --mute         -- Switches to the target sink by unmuting it and muting all other memorized sinks
--r, --relocate     -- Relocates existing application sink inputs to the new sink
+-n, --norelocate   -- Do not relocate existing application sink inputs to the new sink
 ```
 
 ## Wizard types

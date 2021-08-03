@@ -1,15 +1,11 @@
 {
   "name": "paswitch",
-  "version": "0.2.4",
-  "description": "Switches PulseAudio devices by muting the others",
+  "version": "0.2.5",
+  "description": "Switches PulseAudio devices by muting the others. Also works with pipewire and pactl",
   "main": "index.js",
   "bin": "./bin/cli.js",
   "scripts": {
     "test": "node ./bin/cli.js --toggle"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ghostface/paswitch"
   },
   "keywords": [
     "pulseaudio",
@@ -18,7 +14,10 @@
     "pactl",
     "sink"
   ],
-  "author": "Tijmen Bok",
+  "author": "Christoph Herndler",
+  "contributors": [
+  	"Tijmen Bok"
+  ],
   "license": "MIT",
   "dependencies": {
     "commander": "^2.16.0",
